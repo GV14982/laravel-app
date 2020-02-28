@@ -12,15 +12,22 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 Route::get('login', function () {
-    return view('login');
+    return view('auth.login');
+});
+
+Route::get('logout', function () {
+    return "logout";
 });
 
 Route::get('register', function () {
-    return view('register');
+    return view('auth.register');
 });
 
-Route::get('pages', ['middleware' => 'auth', 'uses' => 'PagesController@show']);
+Route::resource('pages', 'PageController');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

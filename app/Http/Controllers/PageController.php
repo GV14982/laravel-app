@@ -14,7 +14,8 @@ class PageController extends Controller
      */
     public function index()
     {
-        //
+        $pages = Page::orderBy('created_at', 'desc')->paginate(10);
+        return view('pages.index')->with('pages', $pages);
     }
 
     /**
@@ -24,7 +25,7 @@ class PageController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.create');
     }
 
     /**
@@ -35,7 +36,18 @@ class PageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+        
+        $page = new Page;
+
+        $page->title = $request->input('title');
+        $page->body = $request->input('body');
+        $page->save();
+
+        return redirect('/pages')->with('success', 'Post Created');
     }
 
     /**
@@ -46,7 +58,8 @@ class PageController extends Controller
      */
     public function show(Page $page)
     {
-        //
+        $data = Page::find($page);
+        return view('pages.show')->with('page', $data[0]);
     }
 
     /**
@@ -57,7 +70,8 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
-        //
+        $data = Page::find($page);
+        return view('pages.edit')->with('page', $data[0]);
     }
 
     /**
@@ -69,7 +83,18 @@ class PageController extends Controller
      */
     public function update(Request $request, Page $page)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+        
+        $data = Page::find($page);
+        $data = $data[0];
+        $data->title = $request->input('title');
+        $data->body = $request->input('body');
+        $data->save();
+
+        return redirect('/pages')->with('success', 'Post Updated');
     }
 
     /**
@@ -80,6 +105,8 @@ class PageController extends Controller
      */
     public function destroy(Page $page)
     {
-        //
+        $data = Page::find($page);
+        $data[0]->delete();
+        return redirect('/pages')->with('success', 'Page Removed');
     }
 }
