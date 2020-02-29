@@ -14,7 +14,7 @@ class PageController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -81,7 +81,11 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
+
         $data = Page::find($page->id);
+        if($data->user_id !== auth()->user()->id) {
+            return redirect('/pages')->with('error', 'Unauthorized');
+        }
         return view('pages.edit')->with('page', $data);
     }
 
@@ -116,6 +120,9 @@ class PageController extends Controller
     public function destroy(Page $page)
     {
         $data = Page::find($page->id);
+        if($data->user_id !== auth()->user()->id) {
+            return redirect('/pages')->with('error', 'Unauthorized');
+        }
         $data->delete();
         return redirect('/pages')->with('success', 'Page Removed');
     }
