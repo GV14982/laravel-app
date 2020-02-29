@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -45,6 +55,7 @@ class PageController extends Controller
 
         $page->title = $request->input('title');
         $page->body = $request->input('body');
+        $page->user_id = auth()->user()->id;
         $page->save();
 
         return redirect('/pages')->with('success', 'Post Created');
@@ -58,8 +69,9 @@ class PageController extends Controller
      */
     public function show(Page $page)
     {
+        dd($page);
         $data = Page::find($page);
-        return view('pages.show')->with('page', $data[0]);
+        return view('pages.show')->with('page', $data);
     }
 
     /**
@@ -70,8 +82,8 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
-        $data = Page::find($page);
-        return view('pages.edit')->with('page', $data[0]);
+        $data = Page::find($page)->first();
+        return view('pages.edit')->with('page', $data);
     }
 
     /**
@@ -89,7 +101,7 @@ class PageController extends Controller
         ]);
         
         $data = Page::find($page);
-        $data = $data[0];
+        $data = $data-first();
         $data->title = $request->input('title');
         $data->body = $request->input('body');
         $data->save();
@@ -105,8 +117,8 @@ class PageController extends Controller
      */
     public function destroy(Page $page)
     {
-        $data = Page::find($page);
-        $data[0]->delete();
+        $data = Page::find($page)->first();
+        $data->delete();
         return redirect('/pages')->with('success', 'Page Removed');
     }
 }
