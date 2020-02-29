@@ -69,8 +69,7 @@ class PageController extends Controller
      */
     public function show(Page $page)
     {
-        dd($page);
-        $data = Page::find($page);
+        $data = Page::find($page)->first();
         return view('pages.show')->with('page', $data);
     }
 
