@@ -69,7 +69,7 @@ class PageController extends Controller
      */
     public function show(Page $page)
     {
-        $data = Page::find($page)->first();
+        $data = Page::find($page->id);
         return view('pages.show')->with('page', $data);
     }
 
@@ -81,7 +81,7 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
-        $data = Page::find($page)->first();
+        $data = Page::find($page->id);
         return view('pages.edit')->with('page', $data);
     }
 
@@ -99,8 +99,7 @@ class PageController extends Controller
             'body' => 'required'
         ]);
         
-        $data = Page::find($page);
-        $data = $data-first();
+        $data = Page::find($page->id);
         $data->title = $request->input('title');
         $data->body = $request->input('body');
         $data->save();
@@ -116,7 +115,7 @@ class PageController extends Controller
      */
     public function destroy(Page $page)
     {
-        $data = Page::find($page)->first();
+        $data = Page::find($page->id);
         $data->delete();
         return redirect('/pages')->with('success', 'Page Removed');
     }
